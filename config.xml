@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns = "http://www.w3.org/ns/widgets"
+    xmlns:gap = "http://phonegap.com/ns/1.0"
+    id        = "com.phonegap.example"
+    version   = "1.0.1">
+
+	<name>Slide</name>
+	
+	<description>
+	La descripción de la aplicación
+	</description>
+	
+	<author href="https://forma-animada.com" email="programacion@forma-animada.com">
+	El nombre del autor
+	</author>
+	
+	<preference name="android-installLocation" value="preferExternal" />
+	
+	<icon src="icons/android/ldpi.png" gap:platform="android" gap:density="ldpi" />
+	<icon src="icons/android/mdpi.png" gap:platform="android" gap:density="mdpi" />
+	<icon src="icons/android/hdpi.png" gap:platform="android" gap:density="hdpi" />
+	<icon src="icons/android/xhdpi.png" gap:platform="android" gap:density="xhdpi" />
+	
+	<feature name="http://api.phonegap.com/1.0/camera"/>
+	<feature name="http://api.phonegap.com/1.0/notification"/>
+	<feature name="http://api.phonegap.com/1.0/file"/>
+	
+</widget>

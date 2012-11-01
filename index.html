@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>Título de la aplicación</title>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" href="css/scrollbar.css">
+
+<script type="text/javascript" src="src/cordova-2.1.0.js"></script>
+<script type="text/javascript" src="src/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="src/iscroll.js"></script>
+
+<script type="text/javascript">
+
+/*GUARDAMOS EL ALGO DEL HEADER, FOOTER Y DEL STATUSBAR DE ANDROID*/
+var heightHeader = 50;
+var heightFooter = 58;
+var heightStatusBar = 25;
+/*****************************************************************/
+
+/*CREAMOS MEDIANTE EVAL LAS VARIABLES DE FORMA DINÁMICA DE LOS SCROLL SEGÚN LAS PANTALLAS QUE TENGAMOS*/
+var numeroContenidos = 3;
+var myScroll;
+var paginaAnterior;
+/******************************************************************************************************/
+
+/*CREAMOS LAS VARIABLES DE LOS SCROLLS SEGÚN EL NUMERO DE CONTENIDOS*/
+for (i=0;i<numeroContenidos;i++){ 
+	eval("var scroll"+i+";");
+}
+/********************************************************************/
+
+/*CREAMOS LOS ESTILOS CSS DE LA PANTALLA EN VERTICAL Y HORIZONTAL LA PRIMERA VEZ QUE ENTRAMOS, SEGÚN SI ENTREMOS EN VERTICAL U HORIZONAL*/
+if(screen.width>screen.height) {
+	// Landscape
+	document.write("<style> @media screen and (orientation:portrait) { #wrapper, #scroller li {width: "+(screen.height+heightStatusBar)+"px} #scroller {width: "+((screen.height+heightStatusBar)*(numeroContenidos+1))+"px} .contenido {height: "+(screen.width-heightHeader-heightFooter-heightStatusBar)+"px} } @media screen and (orientation:landscape) { #wrapper, #scroller li {width: "+(screen.width)+"px} #scroller {width: "+((screen.width)*(numeroContenidos+1))+"px} .contenido {height: "+(screen.height-heightHeader-heightFooter)+"px} } </style>");
+} else {
+	// Portrait
+	document.write("<style> @media screen and (orientation:portrait) { #wrapper, #scroller li {width: "+screen.width+"px} #scroller {width: "+(screen.width*(numeroContenidos+1))+"px} .contenido {height: "+(screen.height-heightHeader-heightFooter)+"px} } @media screen and (orientation:landscape) { #wrapper, #scroller li {width: "+(screen.height+heightStatusBar)+"px} #scroller {width: "+((screen.height+heightStatusBar)*(numeroContenidos+1))+"px} .contenido {height: "+(screen.width-heightHeader-heightFooter-heightStatusBar)+"px} } </style>");
+}
+/****************************************************************************************************************************************/
+
+function loaded() {
+
+	// para saber en que pantalla estamos this.currPageX+1
+	myScroll = new iScroll('wrapper', {
+		snap: true,
+		momentum: false,
+		hScrollbar: false,
+		vScrollbar: false,
+		vScroll: false,
+		onScrollMove: function() {
+			myScroll.disable();
+			
+		}
+	 });
+	
+	for (i=0;i<numeroContenidos;i++){ 
+		eval("scroll"+i+" = new iScroll('contenido"+i+"', {hideScrollbar:true, fadeScrollbar:true, scrollbarClass: 'myScrollbar'});");
+	}
+		
+}
+
+function paginasiguiente(){
+		
+	if(myScroll.currPageX == 0)	$('#prev').show();
+	myScroll.scrollToPage(1, 0);
+	return false;
+		
+}
+	
+document.addEventListener('DOMContentLoaded', loaded, false);
+
+// Listen for orientation changes
+window.addEventListener("orientationchange", function() {
+  	//Announce the new orientation number
+  	//alert(window.orientation);
+  	//$('#modal').show();
+ 	$("#header").hide();
+  	$("#wrapper").hide();
+  	$("#footer").hide();
+  	$("#modal").show();
+  	setInterval(function(){$("#modal").hide();
+		$("#header").show();
+  		$("#wrapper").show();
+  		$("#footer").show();
+	},500);
+}, false);
+
+$(document).ready(function () {
+
+	document.getElementById("prev").addEventListener('touchstart', function(event) {
+		
+		$("#prev").addClass("prev_hover_focus");
+		$("#prev").addClass("prev_hover_focus:before");
+	
+	}, false);
+	
+	document.getElementById("prev").addEventListener('touchend', function(event) {
+		
+		myScroll.scrollToPage('prev', 0);
+		
+		$("#prev").removeClass("prev_hover_focus");
+		$("#prev").removeClass("prev_hover_focus:before");
+		
+		paginaAnterior = myScroll.currPageX+1;
+		eval("scroll"+paginaAnterior+".disable();");
+		eval("scroll"+paginaAnterior+"._pos(0,0);");
+		eval("scroll"+paginaAnterior+".enable();");
+		eval("scroll"+paginaAnterior+".refresh();");
+
+		if(myScroll.currPageX == 0)	$('#prev').hide();
+		
+	}, false);
+		
+});
+	
+</script>
+<style>
+
+</style>
+</head>
+<body>
+<div id="modal"><img src="images/ajax-loader.gif"></div>
+<div id="header">
+    <div id="menu">
+    <div id="prev" class="prev"><span>Back</span></div>
+    <div id="title">HOME</div>
+    <div id="next"></div>
+    </div>
+</div>
+
+<div id="wrapper">
+	<div id="scroller">
+        <ul>
+            <li>
+                <div id="contenido0" class="contenido">
+                    <div class="scroller">
+                        <ul>
+                            <li onclick="paginasiguiente();"><strong>1 Standard iScroll</strong><div class="flecha">&rarr;</div></li>
+                            <li>Pretty row 2</li>
+                            <li>Pretty row 3</li>
+                            <li>Pretty row 4</li>
+                            <li>Pretty row 5</li>
+                            <li>Pretty row 6</li>
+                            <li>Pretty row 7</li>
+                            <li>Pretty row 8</li>
+                            <li>Pretty row 9</li>
+                            <li>Pretty row 10</li>
+                            <li><strong>Standard iScroll</strong></li>
+                            <li>Pretty row 12</li>
+                            <li>Pretty row 13</li>
+                            <li>Pretty row 14</li>
+                            <li>Pretty row 15</li>
+                            <li>Pretty row 16</li>
+                            <li>Pretty row 17</li>
+                            <li>Pretty row 18</li>
+                            <li>Pretty row 19</li>
+                            <li>Pretty row 20</li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div id="contenido1" class="contenido">
+                    <div class="scroller">
+                        <ul>
+                            <li onclick="myScroll.scrollToPage(2, 0);return false"><strong>2 Transition mode</strong><div class="flecha">&rarr;</div></li>
+                            <li>Pretty row 2</li>
+                            <li>Pretty row 3</li>
+                            <li>Pretty row 4</li>
+                            <li>Pretty row 5</li>
+                            <li>Pretty row 6</li>
+                            <li>Pretty row 7</li>
+                            <li>Pretty row 8</li>
+                            <li>Pretty row 9</li>
+                            <li>Pretty row 10</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 12</li>
+                            <li>Pretty row 13</li>
+                            <li>Pretty row 14</li>
+                            <li>Pretty row 15</li>
+                            <li>Pretty row 16</li>
+                            <li>Pretty row 17</li>
+                            <li>Pretty row 18</li>
+                            <li>Pretty row 19</li>
+                            <li>Pretty row 20</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 22</li>
+                            <li>Pretty row 23</li>
+                            <li>Pretty row 24</li>
+                            <li>Pretty row 25</li>
+                            <li>Pretty row 26</li>
+                            <li>Pretty row 27</li>
+                            <li>Pretty row 28</li>
+                            <li>Pretty row 29</li>
+                            <li>Pretty row 30</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 32</li>
+                            <li>Pretty row 33</li>
+                            <li>Pretty row 34</li>
+                            <li>Pretty row 35</li>
+                            <li>Pretty row 36</li>
+                            <li>Pretty row 37</li>
+                            <li>Pretty row 38</li>
+                            <li>Pretty row 39</li>
+                            <li>Pretty row 40</li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div id="contenido2" class="contenido">
+                    <div class="scroller">
+                        <ul>
+                            <li onclick="myScroll.scrollToPage(3, 0);return false"><strong>3 Transition mode</strong><div class="flecha">&rarr;</div></li>
+                            <li>Pretty row 2</li>
+                            <li>Pretty row 3</li>
+                            <li>Pretty row 4</li>
+                            <li>Pretty row 5</li>
+                            <li>Pretty row 6</li>
+                            <li>Pretty row 7</li>
+                            <li>Pretty row 8</li>
+                            <li>Pretty row 9</li>
+                            <li>Pretty row 10</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 12</li>
+                            <li>Pretty row 13</li>
+                            <li>Pretty row 14</li>
+                            <li>Pretty row 15</li>
+                            <li>Pretty row 16</li>
+                            <li>Pretty row 17</li>
+                            <li>Pretty row 18</li>
+                            <li>Pretty row 19</li>
+                            <li>Pretty row 20</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 22</li>
+                            <li>Pretty row 23</li>
+                            <li>Pretty row 24</li>
+                            <li>Pretty row 25</li>
+                            <li>Pretty row 26</li>
+                            <li>Pretty row 27</li>
+                            <li>Pretty row 28</li>
+                            <li>Pretty row 29</li>
+                            <li>Pretty row 30</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 32</li>
+                            <li>Pretty row 33</li>
+                            <li>Pretty row 34</li>
+                            <li>Pretty row 35</li>
+                            <li>Pretty row 36</li>
+                            <li>Pretty row 37</li>
+                            <li>Pretty row 38</li>
+                            <li>Pretty row 39</li>
+                            <li>Pretty row 40</li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        
+            <li>
+                <div id="contenido3" class="contenido">
+                    <div class="scroller">
+                        <ul>
+                            <li><strong>4 Transition mode</strong></li>
+                            <li>Pretty row 2</li>
+                            <li>Pretty row 3</li>
+                            <li>Pretty row 4</li>
+                            <li>Pretty row 5</li>
+                            <li>Pretty row 6</li>
+                            <li>Pretty row 7</li>
+                            <li>Pretty row 8</li>
+                            <li>Pretty row 9</li>
+                            <li>Pretty row 10</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 12</li>
+                            <li>Pretty row 13</li>
+                            <li>Pretty row 14</li>
+                            <li>Pretty row 15</li>
+                            <li>Pretty row 16</li>
+                            <li>Pretty row 17</li>
+                            <li>Pretty row 18</li>
+                            <li>Pretty row 19</li>
+                            <li>Pretty row 20</li>
+                            <li><strong>Transition mode</strong></li>
+                            <li>Pretty row 22</li>
+                            <li>Pretty row 23</li>
+                            <li>Pretty row 24</li>
+                            <li>Pretty row 25</li>
+                            <li>Pretty row 26</li>
+                            <li>Pretty row 27</li>
+                            <li>Pretty row 28</li>
+                            <li>Pretty row 29</li>
+                            <li>Pretty row 30</li>
+                            <li><strong>Transition mode</strong></li>
+                
+                            <li>Pretty row 32</li>
+                            <li>Pretty row 33</li>
+                            <li>Pretty row 34</li>
+                            <li>Pretty row 35</li>
+                            <li>Pretty row 36</li>
+                            <li>Pretty row 37</li>
+                            <li>Pretty row 38</li>
+                            <li>Pretty row 39</li>
+                            <li>Pretty row 40</li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+	</div>
+
+</div>
+
+<div id="footer">
+    <ul>
+        <li><a href="">HOME</a></li>
+        <li><a href="">MENU</a></li>
+        <li><a href="">MENU</a></li>
+        <li><a href="">MENU</a></li>
+    </ul>
+</div>
+
+
+</body>
+</html>
